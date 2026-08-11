@@ -15,7 +15,7 @@ async function userRegistrationController(req, res) {
 
     if(isExist){
         return res.status(422).json({
-            message: "USer already exist",
+            message: "User already exist",
             status: "failed"
         })
     }
@@ -26,7 +26,20 @@ async function userRegistrationController(req, res) {
         password: password
     });
 
-    const token = jwt.sign({userId: user._id,}, process.env.JWT_SECRET);
+    const token = jwt.sign({userId: user._id,}, process.env.JWT_SECRET, {expiresIn: "3d"});
+
+    res.cookie("token", token);
+
+    res.status(201).json({
+        user:{
+            id: user._id,
+            email: user.email,
+            name: user.name
+        },
+        token
+    });
+
+
 }
 
 module.exports = {
