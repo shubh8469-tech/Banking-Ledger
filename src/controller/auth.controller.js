@@ -42,6 +42,40 @@ async function userRegistrationController(req, res) {
 
 }
 
+async function userLoginController(req, res) {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({email});
+    
+    if(!user){
+        res.status(201).json({
+            message: "Inavlid email or passwrod",
+        });
+    }
+
+    const correctPassword = await user.comparePassword(password);
+
+    if(!correctPassword){
+        res.status(201).json({
+            message: "Inavlid passwrod",
+        });
+    }
+
+    const token = jwt.sign({user: user._id}, process.env.JWT_SECRET, {expiresIn: "3d"});
+    res.cookie("token", token);
+
+    res.status(201).json({
+        user:{
+            id: user._id,
+            email: user.email,
+            name: user.name
+        },
+        token
+    });
+
+}
+
 module.exports = {
-    userRegistrationController
+    userRegistrationController,
+    userLoginController
 };
