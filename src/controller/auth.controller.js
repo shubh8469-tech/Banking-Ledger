@@ -42,10 +42,16 @@ async function userRegistrationController(req, res) {
 
 }
 
+
+/**
+* - user login controller
+* - POST /api/auth/login
+*/
+
 async function userLoginController(req, res) {
     const { email, password } = req.body;
 
-    const user = await userModel.findOne({email});
+    const user = await userModel.findOne({email}).select("+password");
     
     if(!user){
         res.status(201).json({
