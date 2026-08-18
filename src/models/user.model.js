@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs")
 
 const userSchema = new mongoose.Schema({
     email: {
-        
         type: String,
         required: [true, "Email is required for creating a account"],
         trim: true,
